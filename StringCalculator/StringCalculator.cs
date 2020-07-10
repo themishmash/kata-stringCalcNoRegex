@@ -29,11 +29,32 @@ namespace StringCalculator
             return input.StartsWith("//");
         }
         
-        private string [] GetCustomDelimiters(string input) 
+        // private string [] GetCustomDelimiters(string input) 
+        // {
+        //     if (!input.StartsWith("//[")) return new[]{input[2].ToString()};
+        //     var delimiterDeclaration = input.Substring(3).Split("]\n")[0]; 
+        //     return new[] {delimiterDeclaration};
+        // }
+        
+        private string [] GetCustomDelimiters(string input)
         {
-            if (!input.StartsWith("//[")) return new[]{input[2].ToString()};
-            var delimiterDeclaration = input.Substring(3).Split("]\n")[0]; 
-            return new[] {delimiterDeclaration};
+            var delimiterDeclaration = string.Empty;
+            if (!input.StartsWith("//[") && !input.Contains("][")) return new[]{input[2].ToString()};
+            
+            if (input.StartsWith("//[") && input.Contains("]["))
+            {
+                delimiterDeclaration = input.Substring(3).Split("]\n")[0];
+                var customDelimiters = delimiterDeclaration.Split("][");  
+                return customDelimiters;
+            }
+            
+            if (input.StartsWith("//["))
+            {
+                delimiterDeclaration = input.Substring(3).Split("]\n")[0];
+                return new[] {delimiterDeclaration};
+            }
+            
+            return null;
         }
         
         private string GetStringToCalculate(string input)
