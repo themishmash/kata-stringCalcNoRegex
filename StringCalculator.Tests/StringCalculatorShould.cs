@@ -81,6 +81,13 @@ namespace StringCalculator.Tests
             Assert.Equal(expectedOutput, _calculator.Add(input));
         }
         
+        [Theory]
+        [InlineData("//[***][#][%]\n1***2#3%4", 10)]
+        public void MultipleDelimitersCanBeAnyLength(string input, int expectedOutput)
+        {
+            Assert.Equal(expectedOutput, _calculator.Add(input));
+        }
+        
         
     }
 }
