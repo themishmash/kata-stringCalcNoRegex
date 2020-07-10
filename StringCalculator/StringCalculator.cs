@@ -8,42 +8,55 @@ namespace StringCalculator
     {
         public int Add(string input)
         {
-            if (input == "") return 0;
-            var defaultDelimiters = new[]{',','\n'};
-            var inputComponents = input.Split('\n');
-            //return input.StartsWith("//") && input.EndsWith("\n");
-            var delimiters = HasCustomDelimiters(input) ? GetCustomDelimiters(input) : defaultDelimiters;
-            var stringToCalculate = HasCustomDelimiters(input) ? input.Substring(4): input;
-            var stringNumbers = stringToCalculate.Split(delimiters);
+            if (input == "") return 0; 
+            var defaultDelimiters = new[] {
+                ",",
+                "\n"
+            };
             
-            if (HasNegatives(stringNumbers))
-            {
-                var negatives = stringNumbers.Where(x => int.Parse(x) < 0);
-                throw new ArgumentException($"Negatives not allowed: {string.Join(", ", negatives)}");
-            }
-            return GetNumbersLessThan1000(stringNumbers).Sum();
+            var delimiters = HasCustomDelimiters(input) ? GetCustomDelimiters(input) : defaultDelimiters;
+            var stringToCalculate = HasCustomDelimiters(input) ? GetStringToCalculate(input) : input;
+            var stringNumbers = stringToCalculate.Split(delimiters, StringSplitOptions.None);
+            
+            if (HasNegatives(stringNumbers)) ThrowNegativeNumberException(stringNumbers);
+
+            var numbersToAdd = GetNumbersLessThan1000(stringNumbers);
+            return numbersToAdd.Sum();
+        }
+        
+        private static bool HasCustomDelimiters(string input)
+        {
+            return input.StartsWith("//");
+        }
+        
+        private string [] GetCustomDelimiters(string input) 
+        {
+            if (!input.StartsWith("//[")) return new[]{input[2].ToString()};
+            var delimiterDeclaration = input.Substring(3).Split("]\n")[0]; 
+            return new[] {delimiterDeclaration};
+        }
+        
+        private string GetStringToCalculate(string input)
+        {
+            if (!input.StartsWith("//[")) return input.Substring(4);
+            var stringToCalculate = input.Substring(3).Split("]\n")[1];
+            return stringToCalculate;
+        }
+        
+        private static bool HasNegatives(IEnumerable<string> stringNumbers)
+        {
+            return stringNumbers.Any(x => int.Parse(x) < 0);
+        }
+
+        private static void ThrowNegativeNumberException(string[] stringNumbers)
+        {
+            var negatives = stringNumbers.Where(x => int.Parse(x) < 0);
+            throw new ArgumentException($"Negatives not allowed: {string.Join(", ", negatives)}");
         }
 
         private static IEnumerable<int> GetNumbersLessThan1000(IEnumerable<string> stringNumbers)
         {
              return stringNumbers.Select(int.Parse).Where(number => number < 1000);
         }
-
-        private static bool HasNegatives(IEnumerable<string> stringNumbers)
-        {
-            return stringNumbers.Any(x => int.Parse(x) < 0);
-        }
-
-        private char[] GetCustomDelimiters(string input) //just take in left side component and see if starts with //[ and ends with ] . Split on \n character. Split before call getcustomdelimiters. 
-        {
-            //
-            return new[]{input[2]};
-        }
-
-        private static bool HasCustomDelimiters(string input)
-        {
-            return input.StartsWith("//");
-        }
-        
     }
 }
