@@ -81,6 +81,7 @@ namespace StringCalculator.Tests
             Assert.Equal(expectedOutput, _calculator.Add(input));
         }
         
+        //passes but need to refactor
         [Theory]
         [InlineData("//[***][#][%]\n1***2#3%4", 10)]
         public void MultipleDelimitersCanBeAnyLength(string input, int expectedOutput)
@@ -88,6 +89,12 @@ namespace StringCalculator.Tests
             Assert.Equal(expectedOutput, _calculator.Add(input));
         }
         
+        [Theory]
+        [InlineData("//[*1*][%]\n1*1*2%3", 6)]
+        public void DelimitersCanBeNumbers(string input, int expectedOutput)
+        {
+            Assert.Equal(expectedOutput, _calculator.Add(input));
+        }
         
     }
 }
