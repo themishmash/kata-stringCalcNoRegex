@@ -28,38 +28,25 @@ namespace StringCalculator
         {
             return input.StartsWith("//");
         }
-        
-        // private string [] GetCustomDelimiters(string input) 
-        // {
-        //     if (!input.StartsWith("//[")) return new[]{input[2].ToString()};
-        //     var delimiterDeclaration = input.Substring(3).Split("]\n")[0]; 
-        //     return new[] {delimiterDeclaration};
-        // }
-        
+
         private string [] GetCustomDelimiters(string input)
         {
-            var delimiterDeclaration = string.Empty;
-            if (!input.StartsWith("//[") && !input.Contains("][")) return new[]{input[2].ToString()};
+            if (!input.StartsWith("//[")) return new[]{input[2].ToString()}; // //;\n without the square bracket
             
-            if (input.StartsWith("//[") && input.Contains("]["))
-            {
-                delimiterDeclaration = input.Substring(3).Split("]\n")[0];
-                var customDelimiters = delimiterDeclaration.Split("][");  
-                return customDelimiters;
-            }
+            if (!input.Contains("]")) return new[]{input[2].ToString()}; //implicitly this starts with //[
             
-            if (input.StartsWith("//["))
-            {
-                delimiterDeclaration = input.Substring(3).Split("]\n")[0];
-                return new[] {delimiterDeclaration};
-            }
-            
-            return null;
+            //implicitly saying starts with //[ and contains ]
+            var delimiterDeclaration = input.Substring(3).Split("]\n")[0];
+            var customDelimiters = delimiterDeclaration.Split("][");  
+            return customDelimiters;
         }
         
         private string GetStringToCalculate(string input)
         {
             if (!input.StartsWith("//[")) return input.Substring(4);
+            
+            if(!input.Contains("]")) return input.Substring(4); //added in this as we want to have [ to be a delimiter 
+            
             var stringToCalculate = input.Substring(3).Split("]\n")[1];
             return stringToCalculate;
         }

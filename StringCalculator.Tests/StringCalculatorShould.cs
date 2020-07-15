@@ -53,6 +53,8 @@ namespace StringCalculator.Tests
         
         [Theory]
         [InlineData("//;\n1;2", 3)]
+        [InlineData("//[\n1[2", 3)]
+        [InlineData("//]\n1]2", 3)]
         public void AllowCustomDelimiters(string input, int expectedOutput)
         {
             Assert.Equal(expectedOutput, _calculator.Add(input));
